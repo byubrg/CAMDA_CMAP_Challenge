@@ -32,7 +32,7 @@ with gzip.open(cmapMeta, 'r') as metaIn :
                     extenPertToSample[sampleKey] = []
                 extenPertToSample[sampleKey].append(lineList[0])
         if lineList[1] == "Perturbagen" :
-            sampleToPerturbagen[lineList[0]] = lineList[1]
+            sampleToPerturbagen[lineList[0]] = lineList[2]
                 
 with open(camdaGiven, 'r') as camdaIn : 
     with gzip.open(trainingOut, 'w') as trainingO :
@@ -61,43 +61,60 @@ with open(camdaGiven, 'r') as camdaIn :
                  print(line)
                  lineList = line.strip('\n').split('\t')
                  ##Focus first on mcf7
+                 if lineList[3][0] == "'" :
+                     lineList[3] = lineList[3][1:]
+
                  mcf7Compound = np.array(data[sampleToIndex[lineList[3]],1:], 'float')
                  
                  mcf7Perturbagen = sampleToPerturbagen[lineList[3]]
                  ##Find All MCF7 vehicle expression values for patient
                  extenList = lineList[4].split(".")
-                 allMCF7VehicleData = []
-                 for exten in extenList :
-                     if exten != "" :
-                         sampleLists = extenPertToSample[str(exten + "_MCF7_" + lineList[3].split(".")[0])]
-                         for sample in sampleLists :
-                             allMCF7VehicleData.append(np.array(data[sampleToIndex[sample],1:], dtype='float'))
+                 if len(extenList) > 2 :
+
+                     allMCF7VehicleData = []
+                     for exten in extenList :
+                         if exten != "" :
+                             sampleLists = extenPertToSample[str(exten + "_MCF7_" + lineList[3].split(".")[0])]
+                             for sample in sampleLists :
+                                 allMCF7VehicleData.append(np.array(data[sampleToIndex[sample],1:], dtype='float'))
                              
-                 mcf7Vehicle = np.mean(np.array(allMCF7VehicleData), axis=0)
+                     mcf7Vehicle = np.mean(np.array(allMCF7VehicleData), axis=0)
                  
-                 mcf7Result = np.subtract(mcf7Compound, mcf7Vehicle)
+                     mcf7Result = np.subtract(mcf7Compound, mcf7Vehicle)
+                 else :
+                     if lineList[4][0] == "'" :
+                         lineList[4] = lineList[4][1:]
+                     mcf7Result = np.array(data[sampleToIndex[lineList[4]],1:], dtype='float')
 
                  ##Now focusing on PC3
-                 PC3Compound = np.array(data[sampleToIndex[lineList[5]],1:])
+                 if lineList[5][0] == "'" :
+                     lineList[5] = lineList[5][1:]
+
+                 PC3Compound = np.array(data[sampleToIndex[lineList[5]],1:], 'float')
+                          
                  PC3Perturbagen = sampleToPerturbagen[lineList[5]]
 
                  ##Find All PC3 vehicle expression values for patient
-                 extenList = lineList[4].split(".")
-                 allPC3VehicleData = []
-                 for exten in extenList :
-                     if exten != "" :
-                         sampleLists = extenPertToSample[str(exten + "_PC3_" + lineList[3].split(".")[0])]
-                         for sample in sampleLists :
-                             allPC3VehicleData.append(np.array(data[sampleToIndex[sample],1:], dtype='float'))
+                 extenList = lineList[6].split(".")
+                 if len(extenList) > 2 :
+                     allPC3VehicleData = []
+                     for exten in extenList :
+                         if exten != "" :
+                             sampleLists = extenPertToSample[str(exten + "_PC3_" + lineList[5].split(".")[0])]
+                             for sample in sampleLists :
+                                 allPC3VehicleData.append(np.array(data[sampleToIndex[sample],1:], dtype='float'))
                              
-                 PC3Vehicle = np.mean(np.array(allPC3VehicleData), axis=0)
+                     PC3Vehicle = np.mean(np.array(allPC3VehicleData), axis=0)
 
-                 PC3Result = np.subtract(PC3Compound, PC3Vehicle)
+                     PC3Result = np.subtract(PC3Compound, PC3Vehicle)
+                 else :
+                     if lineList[6][0] == "'" :
+                         lineList[6] = lineList[6][1:]
+                     PC3Result = np.array(data[sampleToIndex[lineList[6]],1:], dtype='float')
                  
                  assert mcf7Perturbagen == PC3Perturbagen 
                      
                  if "T" in lineList[1] :
                      trainingO.write((lineList[0] + "\t" + lineList[2] + "\t" +  mcf7Perturbagen + "\t" + "\t".join(mcf7Result.astype(str)) + "\t" + "\t".join(PC3Result.astype(str))+ "\n").encode()) 
                  else : 
-                     testO.write((lineList[0] + "\t" + lineList[2] + "\t" + mcf7Perturbagen + "\t" + "\t".join(mcf7Result.astype(str)) + "\t" + "\t".join(PC3Result.astype(str))+ "\n").encode()) 
-                 break
+                     testO.write((lineList[0] + "\tNA\t" + mcf7Perturbagen + "\t" + "\t".join(mcf7Result.astype(str)) + "\t" + "\t".join(PC3Result.astype(str))+ "\n").encode()) 
