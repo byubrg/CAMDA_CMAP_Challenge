@@ -16,5 +16,5 @@ rm "$fileName"
 
 #setting up environment for this project
 export PATH=$softwareName/bin:$PATH
-conda create --name skikitLearn_env -y python=3.6.2 NumPy=1.13.3 SciPy=1.0.0 scikit-learn=0.19.1
+conda create --name scikitLearn_env -y python=3.6.2 NumPy=1.13.3 SciPy=1.0.0 scikit-learn=0.19.1
 
