@@ -4,6 +4,7 @@
 ReformatingData=ReformatingData
 Data=Data
 CMAP_2_Entrez=$ReformatingData/CMAP_2_Entrez
+scikitLearnAlgorithms=ScikitLearnAlgorithms
 
 #Given Files 
 camdaGiven=$Data/CAMDA_Challange_dataset_filenames.txt  
@@ -30,9 +31,9 @@ source activate scikitLearn_env
 cd ../../..
 
 #Download CMAP data and reformat
-bash $cmapInstall
-bash $cmapDownload
-bash $cmapParse 
+#bash $cmapInstall
+#bash $cmapDownload
+#bash $cmapParse 
 
 #Filter the dataset for the camda challenge
 #python3 $reformatCamda $camdaGiven $cmapExpressionData $trainingReformatedCamda $testReformatedCamda $cmapMetadataInfo
