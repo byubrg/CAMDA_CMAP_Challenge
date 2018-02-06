@@ -15,6 +15,7 @@ testReformatedCamda=$Data/testReformatedCamda.txt.gz
 
 #Scripts
 reformatCamda=reformatCamdaGivin.py
+mlp=mlp.py
 
 #environment
 minicondaBin=Software/miniconda/bin/
@@ -22,4 +23,5 @@ cd $minicondaBin
 source activate skikitLearn_env
 cd ../../..
 
-python3 $reformatCamda $camdaGiven $cmapExpressionData $trainingReformatedCamda $testReformatedCamda $cmapMetadataInfo
+#python3 $reformatCamda $camdaGiven $cmapExpressionData $trainingReformatedCamda $testReformatedCamda $cmapMetadataInfo
+python3 $mlp $trainingReformatedCamda

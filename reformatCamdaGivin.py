@@ -20,7 +20,7 @@ for element in  data[:,0] :
 
 ##Make a directory with all the possible extensions and pertubagen type to list of sample Id
 extenPertToSample = {}
-sampleToPerturbagen = {}
+#sampleToPerturbagen = {}
 with gzip.open(cmapMeta, 'r') as metaIn :
     metaIn.readline()
     for line in metaIn :
@@ -31,8 +31,8 @@ with gzip.open(cmapMeta, 'r') as metaIn :
                 if sampleKey not in extenPertToSample :
                     extenPertToSample[sampleKey] = []
                 extenPertToSample[sampleKey].append(lineList[0])
-        if lineList[1] == "Perturbagen" :
-            sampleToPerturbagen[lineList[0]] = lineList[2]
+#        if lineList[1] == "Perturbagen" :
+#            sampleToPerturbagen[lineList[0]] = lineList[2]
                 
 with open(camdaGiven, 'r') as camdaIn : 
     with gzip.open(trainingOut, 'w') as trainingO :
@@ -42,7 +42,7 @@ with open(camdaGiven, 'r') as camdaIn :
                 lineList = camdaIn.readline().strip('\n').split('\t')
                 if 'S' in lineList[0] :
                     break
-            firstLine = "S No.\tLiver\tDrug"
+            firstLine = "S No.\tLiver"
             
             ##Make the first line of both files
             for element in data[0,1:] :
@@ -66,7 +66,7 @@ with open(camdaGiven, 'r') as camdaIn :
 
                  mcf7Compound = np.array(data[sampleToIndex[lineList[3]],1:], 'float')
                  
-                 mcf7Perturbagen = sampleToPerturbagen[lineList[3]]
+#                 mcf7Perturbagen = sampleToPerturbagen[lineList[3]]
                  ##Find All MCF7 vehicle expression values for patient
                  extenList = lineList[4].split(".")
                  if len(extenList) > 2 :
@@ -92,7 +92,7 @@ with open(camdaGiven, 'r') as camdaIn :
 
                  PC3Compound = np.array(data[sampleToIndex[lineList[5]],1:], 'float')
                           
-                 PC3Perturbagen = sampleToPerturbagen[lineList[5]]
+#                 PC3Perturbagen = sampleToPerturbagen[lineList[5]]
 
                  ##Find All PC3 vehicle expression values for patient
                  extenList = lineList[6].split(".")
@@ -112,9 +112,9 @@ with open(camdaGiven, 'r') as camdaIn :
                          lineList[6] = lineList[6][1:]
                      PC3Result = np.array(data[sampleToIndex[lineList[6]],1:], dtype='float')
                  
-                 assert mcf7Perturbagen == PC3Perturbagen 
+#                 assert mcf7Perturbagen == PC3Perturbagen 
                      
                  if "T" in lineList[1] :
-                     trainingO.write((lineList[0] + "\t" + lineList[2] + "\t" +  mcf7Perturbagen + "\t" + "\t".join(mcf7Result.astype(str)) + "\t" + "\t".join(PC3Result.astype(str))+ "\n").encode()) 
+                     trainingO.write((lineList[0] + "\t" + lineList[2] + "\t" + "\t".join(mcf7Result.astype(str)) + "\t" + "\t".join(PC3Result.astype(str))+ "\n").encode()) 
                  else : 
-                     testO.write((lineList[0] + "\tNA\t" + mcf7Perturbagen + "\t" + "\t".join(mcf7Result.astype(str)) + "\t" + "\t".join(PC3Result.astype(str))+ "\n").encode()) 
+                     testO.write((lineList[0] + "\tNA\t" + "\t".join(mcf7Result.astype(str)) + "\t" + "\t".join(PC3Result.astype(str))+ "\n").encode()) 

@@ -7,6 +7,7 @@ mkdir -p $softwareFolder
 #installing miniconda
 softwareName=$softwareFolder/miniconda
 url="https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+#url="https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
 fileName="$softwareFolder/$(basename $url)"
 
 curl -o "$fileName" -L "$url"
