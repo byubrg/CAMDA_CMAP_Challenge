@@ -23,6 +23,7 @@ cmapParse=$CMAP_2_Entrez/parse.sh
 
 #Algorithm Scripts
 mlp=$scikitLearnAlgorithms/mlp.py
+ranForest=$scikitLearnAlgorithms/random_forest.py
 
 #Opening environment for dependencies
 minicondaBin=Software/miniconda/bin/
@@ -40,4 +41,5 @@ cd ../../..
 
 
 #The scilearn algorithms - Please add your algorithm here
-python3 $mlp $trainingReformatedCamda
+#python3 $mlp $trainingReformatedCamda
+python3 $ranForest $trainingReformatedCamda
