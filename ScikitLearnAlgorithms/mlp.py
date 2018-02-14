@@ -32,8 +32,8 @@ def train(infile):
 
     ## Build your classifier
 #    MLP = MLPClassifier(hidden_layer_sizes=(48322,48322,48322)) ##Too much for the account on the supercomputer. Need to do 2n 
-#    MLP = MLPClassifier(hidden_layer_sizes=(13000,13000,13000)) 
-    MLP = MLPClassifier(hidden_layer_sizes=(30,30,30)) 
+    MLP = MLPClassifier(hidden_layer_sizes=(13000,13000,13000)) 
+#    MLP = MLPClassifier(hidden_layer_sizes=(30,30,30)) 
 
     ## Place the training data in the MLP to train your algorithm
     MLP.fit(X_train,y_train)

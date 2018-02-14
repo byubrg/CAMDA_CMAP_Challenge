@@ -38,5 +38,6 @@ cd ../../..
 #Filter the dataset for the camda challenge
 #python3 $reformatCamda $camdaGiven $cmapExpressionData $trainingReformatedCamda $testReformatedCamda $cmapMetadataInfo
 
-#The scilearn algorithms
+
+#The scilearn algorithms - Please add your algorithm here
 python3 $mlp $trainingReformatedCamda
