@@ -23,6 +23,7 @@ cmapParse=$CMAP_2_Entrez/parse.sh
 
 #Algorithm Scripts
 mlp=$scikitLearnAlgorithms/mlp.py
+ranForest=$scikitLearnAlgorithms/random_forest.py
 
 #Opening environment for dependencies
 minicondaBin=Software/miniconda/bin/
@@ -38,5 +39,7 @@ cd ../../..
 #Filter the dataset for the camda challenge
 #python3 $reformatCamda $camdaGiven $cmapExpressionData $trainingReformatedCamda $testReformatedCamda $cmapMetadataInfo
 
-#The scilearn algorithms
-python3 $mlp $trainingReformatedCamda
+
+#The scilearn algorithms - Please add your algorithm here
+#python3 $mlp $trainingReformatedCamda
+python3 $ranForest $trainingReformatedCamda
