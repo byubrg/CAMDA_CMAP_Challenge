@@ -22,8 +22,7 @@ cmapDownload=$CMAP_2_Entrez/download.sh
 cmapParse=$CMAP_2_Entrez/parse.sh
 
 #Algorithm Scripts
-mlp=$scikitLearnAlgorithms/mlp.py
-ranForest=$scikitLearnAlgorithms/random_forest.py
+cv=$scikitLearnAlgorithms/executeCV.py
 
 #Opening environment for dependencies
 minicondaBin=Software/miniconda/bin/
@@ -40,6 +39,5 @@ cd ../../..
 #python3 $reformatCamda $camdaGiven $cmapExpressionData $trainingReformatedCamda $testReformatedCamda $cmapMetadataInfo
 
 
-#The scilearn algorithms - Please add your algorithm here
-#python3 $mlp $trainingReformatedCamda
-python3 $ranForest $trainingReformatedCamda
+##The This script sets up cross validation and executes each algorithm in collaberation of ensemble methods 
+python3 $cv $trainingReformatedCamda
