@@ -13,7 +13,9 @@
   ```
   git clone <your-forked-repository-api> 
   ```
-
+  
+  For example:
+  
   ```
   git clone git@github.com:glenrs/WishBuilder.git
   ```
@@ -64,4 +66,10 @@
   git push origin <name-of-branch>
   ```
 
-8. To add this to the master repository you will now need to navigate to the repository for the group under [Pull Requests](https://github.com/byubrg/CAMDA_CMAP_Challenge/pulls). You can now create your pull request by clicking on "New Pull Request". After click on "compare across forks" and navigate to the fork you would like to merge with the master branch on the club site. Next click on "Create Pull Request". On the next page you will see the commits on your branch and you can navigate to other windows that will allow you to see the changes that you made. If any of the changes look unfamiliar close your pull request. If it looks good, message me and I will merge your pull request after making sure there are no conflicts.
+8. To add this to the master repository you will now need to navigate to the repository for the group under [Pull Requests](https://github.com/byubrg/CAMDA_CMAP_Challenge/pulls). You can now create your pull request by clicking on "New Pull Request". After click on "compare across forks" and navigate to the fork you would like to merge with the master branch on the club site. Next click on "Create Pull Request". On the next page you will see the commits on your branch and you can navigate to other windows that will allow you to see the changes that you made. Make the title the name of your branch, and make the message aggree with your previous commited message. If any of the changes look unfamiliar close your pull request. If it looks good, message me and I will merge your pull request after making sure there are no conflicts.
+
+9. After your pull request is merged you can execute this code on your master repository to update your master repository to your changes. 
+
+  ```
+  git pull git@github.com:byubrg/CAMDA_CMAP_Challenge.git master 
+  ```
