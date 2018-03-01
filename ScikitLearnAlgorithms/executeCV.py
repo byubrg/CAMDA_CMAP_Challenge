@@ -5,12 +5,17 @@ from sklearn.metrics import classification_report,confusion_matrix
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.model_selection import ShuffleSplit
+from sklearn.model_selection import StratifiedKFold
 import numpy as np
 import sys, gzip
 
 #Import algorithm file
 from mlp import mlp
 from random_forest import rf
+from naiveBayes import naiveBayes
+from kNearestNeighbor import kNearestNeighbor
+from svm import supportVM 
+from logisticRegression import logisticRegression
 
 train_file = sys.argv[1]
 
@@ -41,8 +46,12 @@ def train(infile):
 #    for train, test in kf.split(features):
 
     ## Third way is the shuffle split.
-    ss = ShuffleSplit(n_splits=10, test_size=0.1, random_state=0)
-    for train, test in ss.split(features):
+#    ss = ShuffleSplit(n_splits=10, test_size=0.1, random_state=0)
+#    for train, test in ss.split(features):
+
+    ## Fouth way is the stradified fold.
+    skf = StratifiedKFold(n_splits=10)
+    for train, test in skf.split(features, answers) :
         print("Training: %s \n Test: %s" % (train, test))	
         scaler = StandardScaler()
         X_train, X_test, y_train, y_test = features[train], features[test], answers[train], answers[test]
@@ -54,9 +63,13 @@ def train(infile):
         X_train = scaler.transform(X_train)
         X_test = scaler.transform(X_test)
 
-        ## This is where we can add the algorithms
-#        predictions, y_prob = mlp(X_train, X_test, y_train)
-        predictions, y_prob = rf(X_train, X_test, y_train)
+        ####### This is where we want to implement the Ensemble method ###### 
+        predictions, y_prob = mlp(X_train, X_test, y_train)
+#        predictions, y_prob = rf(X_train, X_test, y_train)
+#        predictions, y_prob = naiveBayes(X_train, X_test, y_train)
+#        predictions, y_prob = kNearestNeighbor(X_train, X_test, y_train)
+#        predictions, y_prob = supportVM(X_train, X_test, y_train) ##Attention, this returns a y_prob of 0 because it doesn't work with the SVM
+#        predictions, y_prob = logisticRegression(X_train, X_test, y_train)
 
         ## This will show the confusion in a matrix that will tell how often we were correct 
         y_test_final = np.concatenate([y_test_final,y_test])
