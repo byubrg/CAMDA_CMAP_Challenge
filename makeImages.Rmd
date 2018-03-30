@@ -14,37 +14,53 @@ data
 ```
 
 ```{r}
-accuracyNumEstimators <- tapply(data$accuracy,data$numEstimators,mean)
-sensitivityNumEstimators <- tapply(data$sensitivity,data$numEstimators,mean)
-specificityNumEstimators <- tapply(data$specificity,data$numEstimators,mean)
-mccNumEstimators <- tapply(data$mcc,data$numEstimators,mean)
+accuracyMean <- tapply(data$accuracy,data$parameterTested,mean)
+sensitivityMean <- tapply(data$sensitivity,data$parameterTested,mean)
+specificityMean <- tapply(data$specificity,data$parameterTested,mean)
+mccMean <- tapply(data$mcc,data$parameterTested,mean)
 
-accuracyNumEstimators <- data.frame(accuracyNumEstimators)
-x.axis <- row.names(accuracyNumEstimators)
+accuracyMean <- data.frame(accuracyMean)
+parameterTested <- row.names(accuracyMean)
 
-prepared.data <- data.frame(x.axis,accuracyNumEstimators,specificityNumEstimators,sensitivityNumEstimators,mccNumEstimators) 
-prepared.data$x.axis <- as.numeric(as.character(prepared.data$x.axis))
+prepared.data <- data.frame(parameterTested,accuracyMean,sensitivityMean,specificityMean,mccMean) 
+prepared.data$parameterTested <- as.numeric(as.character(prepared.data$parameterTested))
 prepared.data
 ```
 
 ```{r}
 library(ggplot2)
 
-ggplot(prepared.data,aes(x.axis,accuracyNumEstimators))+
+accuracyPlot <- ggplot(prepared.data,aes(parameterTested,accuracyMean))+
   geom_line() +
   labs(title="Accuracy")
 
-ggplot(prepared.data,aes(x.axis,specificityNumEstimators))+
+specificityPlot <- ggplot(prepared.data,aes(parameterTested,specificityMean))+
   geom_line() +
   labs(title="Specificity")
 
-ggplot(prepared.data,aes(x.axis,sensitivityNumEstimators))+
+sensitivityPlot <- ggplot(prepared.data,aes(parameterTested,sensitivityMean))+
   geom_line() +
   labs(title="Sensitivity")
 
-ggplot(prepared.data,aes(x.axis,mccNumEstimators))+
+mccPlot <- ggplot(prepared.data,aes(parameterTested,mccMean))+
   geom_line() +
   labs(title="MCC")
 
+accuracyPlot
+specificityPlot
+sensitivityPlot
+mccPlot
+
+```
+
+```{r}
+## change location for your algorithm and parameter
+setwd("ParameterOptomizationGraphs/randomForest/numberOfTrees")
+
+## 
+ggsave("accuracyNumberOfTrees.png",accuracyPlot)
+ggsave("specificityNumberOfTrees.png",accuracyPlot)
+ggsave("sensitivityNumberOfTrees.png",accuracyPlot)
+ggsave("mccNumberOfTrees.png",accuracyPlot)
 ```
 
