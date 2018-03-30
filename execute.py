@@ -152,7 +152,7 @@ def test(trainFile,testFile):
 
     return predictions, y_prob
 
-def optomizeRF(trainFile,cellLine,outFile,boolFeatureSelection,valuesNumEstimators,rangeRandomSeed):
+def optomize(trainFile,cellLine,outFile,boolFeatureSelection,rangeOfParameterTested,rangeRandomSeed):
     with gzip.open(trainFile, 'r') as file :
         data = np.genfromtxt(file, delimiter='\t',dtype=str)
 
@@ -168,10 +168,10 @@ def optomizeRF(trainFile,cellLine,outFile,boolFeatureSelection,valuesNumEstimato
     answers = np.array(answers,dtype=float) 
 
     with open(outFile, 'w') as outFile :
-        outFile.write("cellLine\trandomSeed\tnumEstimators\tboolFeatureSelection\taccuracy\tsensitivity\tspecificity\tmcc\n")
+        outFile.write("cellLine\trandomSeed\tparameterTested\tboolFeatureSelection\taccuracy\tsensitivity\tspecificity\tmcc\n")
 
-        for numEstimators in valuesNumEstimators :
-            print("numEstimators:",numEstimators,sep="\t")
+        for parameterTested in rangeOfParameterTested :
+            print("Parameter value:",parameterTested,sep="\t")
             for randomSeed in range(rangeRandomSeed) :
                 ## Initialize prediction arrays
                 y_test_final = np.array([])
@@ -204,7 +204,8 @@ def optomizeRF(trainFile,cellLine,outFile,boolFeatureSelection,valuesNumEstimato
                     X_test = scaler.transform(X_test)
 
                     ## You will need to optomize your function
-                    predictions, y_prob = rfo(X_train, X_test, y_train, numEstimators, randomSeed)
+                    ## Change this to the function you are optomizing!!
+                    predictions, y_prob = rfo(X_train, X_test, y_train, parameterTested, randomSeed)
 
                     ## This will show the confusion in a matrix that will tell how often we were correct 
                     y_test_final = np.concatenate([y_test_final,y_test])
@@ -221,7 +222,7 @@ def optomizeRF(trainFile,cellLine,outFile,boolFeatureSelection,valuesNumEstimato
                
                 outFile.write(cellLine + "\t" + 
                               str(randomSeed) + "\t" +
-                              str(numEstimators) + "\t" +
+                              str(parameterTested) + "\t" +
                               str(boolFeatureSelection) + "\t" +
                               str(accuracy) + "\t" +
                               str(sensitivity) + "\t" +
@@ -245,12 +246,12 @@ def optomizeRF(trainFile,cellLine,outFile,boolFeatureSelection,valuesNumEstimato
 ## Optimize, formating -> trainFile,outFile,boolFeatureSelection,valuesNumEstimators,rangeRandomSeed
 print("Training PC3\n")
 valuesNumEstimators = list(range(101))
-valuesNumEstimators = valuesNumEstimators[6:100:2]
+valuesNumEstimators = valuesNumEstimators[6:100:5]
 print(valuesNumEstimators)
-#optomizeRF(trainPC3,"PC3","outFile.txt",True,valuesNumEstimators,5)
-optomizeRF(trainPC3,"PC3","outFile.txt",False,valuesNumEstimators,5)
-#optomizeRF(trainMCF7,"MCF7","outFile.txt",True,valuesNumEstimators,5)
-#optomizeRF(trainMCF7,"MCF7","outFile.txt",False,valuesNumEstimators,5)
+#optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
+optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
+#optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
+#optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
 
 """
 ## TRAINING 
