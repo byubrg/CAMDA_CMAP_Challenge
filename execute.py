@@ -11,19 +11,20 @@ from sklearn.model_selection import KFold
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import StratifiedKFold
 
-#Import customly adapted sklearn algorithm modules 
-from ScikitLearnAlgorithms.mlp import mlp 
-from ScikitLearnAlgorithms.randomForest import rf
-from ScikitLearnAlgorithms.naiveBayes import naiveBayes
-from ScikitLearnAlgorithms.kNearestNeighbor import kNearestNeighbor
-from ScikitLearnAlgorithms.svm import supportVM 
-from ScikitLearnAlgorithms.logisticRegression import logisticRegression
+## Import customly adapted sklearn algorithm modules 
+from ScikitLearnAlgorithms.mlp import * 
+from ScikitLearnAlgorithms.randomForest import * 
+from ScikitLearnAlgorithms.naiveBayes import * 
+from ScikitLearnAlgorithms.kNearestNeighbor import * 
+from ScikitLearnAlgorithms.svm import * 
+from ScikitLearnAlgorithms.logisticRegression import * 
 
-#Import Helper Modules
+## Import Helper Modules
 from helper.calcuateAccuracy import *
 from helper.ensemble import ensemble
 from helper.featureSelect import featureSelect
 
+## Set File Locations
 trainPC3 = sys.argv[1]
 trainMCF7 = sys.argv[2]
 testPC3 = sys.argv[3]
@@ -41,8 +42,8 @@ def makePredictions(X_train,X_test,y_train) :
     X_test = scaler.transform(X_test)
 
     ####### This is where we want to implement the Ensemble method ###### 
-    predictions, y_prob = mlp(X_train, X_test, y_train)
-#    predictions, y_prob = rf(X_train, X_test, y_train)
+#    predictions, y_prob = mlp(X_train, X_test, y_train)
+    predictions, y_prob = rf(X_train, X_test, y_train)
 #    predictions, y_prob = naiveBayes(X_train, X_test, y_train)
 #    predictions, y_prob = kNearestNeighbor(X_train, X_test, y_train)
 #    predictions, y_prob = supportVM(X_train, X_test, y_train) ##Attention, this returns a y_prob of 0 because it doesn't work with the SVM
@@ -84,6 +85,9 @@ def train(trainFile):
         i += 1
         print("Fold:",i,sep=" ")
         X_train, X_test, y_train, y_test = features[train], features[test], answers[train], answers[test]
+
+        ## this is a custom function that takes the top 25 % of the variance of the values 
+        X_train,X_test = featureSelect(X_train,X_test)
 
         predictions, y_prob = makePredictions(X_train,X_test,y_train) 
 
@@ -134,7 +138,11 @@ def test(trainFile,testFile):
     for row in testData[1:,]:
         X_test.append(row[2:])
 
-#    X_train = featureSelect(X_train)
+#    y_train = np.array(y_train,dtype=float)
+    X_train = np.array(X_train,dtype=float) 
+    X_test = np.array(X_test,dtype=float) 
+
+    X_train,X_test = featureSelect(X_train,X_test)
 
     ## Convert to numpy arrays for algorithms
     X_test = np.array(X_test,dtype=float)
@@ -144,14 +152,113 @@ def test(trainFile,testFile):
 
     return predictions, y_prob
 
+def optomizeRF(trainFile,cellLine,outFile,boolFeatureSelection,valuesNumEstimators,rangeRandomSeed):
+    with gzip.open(trainFile, 'r') as file :
+        data = np.genfromtxt(file, delimiter='\t',dtype=str)
+
+    ## Split the data up into features and answers
+    answers = []        	
+    features = []
+    for row in data[1:,]:
+        answers.append(row[1])
+        features.append(row[2:])
+	
+    ## Convert to numpy arrays for algorithms
+    features = np.array(features,dtype=float)
+    answers = np.array(answers,dtype=float) 
+
+    with open(outFile, 'w') as outFile :
+        outFile.write("cellLine\trandomSeed\tnumEstimators\tboolFeatureSelection\taccuracy\tsensitivity\tspecificity\tmcc\n")
+
+        for numEstimators in valuesNumEstimators :
+            print("numEstimators:",numEstimators,sep="\t")
+            for randomSeed in range(rangeRandomSeed) :
+                ## Initialize prediction arrays
+                y_test_final = np.array([])
+                predictions_final = np.array([])
+                y_prob_final = np.ndarray(shape=(0,2), dtype=int)
+
+                ## We are using stradified fold cross validation.
+                skf = StratifiedKFold(n_splits=10)
+#                i = 0
+
+                ## Feature Selection needs to happen on each fold independently
+                for train, test in skf.split(features, answers) :
+                    ## You can uncomment this row to see which indecis are used for the training and test sets for each fold
+#                    print("Training: %s \n Test: %s" % (train, test))	
+#                    i += 1
+#                    print("Fold:",i,sep=" ")
+                    X_train, X_test, y_train, y_test = features[train], features[test], answers[train], answers[test]
+
+                    ## this is a custom function that takes the top 25 % of the variance of the values 
+                    if boolFeatureSelection == True :
+                        X_train,X_test = featureSelect(X_train,X_test)
+       
+                    scaler = StandardScaler()
+
+                    ## This sets the size of the scaler object
+                    scaler.fit(X_train)
+
+                    ## The MLP is super senesitive to feature scaling, so it is highly recommended to scale your data.
+                    X_train = scaler.transform(X_train)
+                    X_test = scaler.transform(X_test)
+
+                    ## You will need to optomize your function
+                    predictions, y_prob = rfo(X_train, X_test, y_train, numEstimators, randomSeed)
+
+                    ## This will show the confusion in a matrix that will tell how often we were correct 
+                    y_test_final = np.concatenate([y_test_final,y_test])
+                    predictions_final = np.concatenate([predictions_final,predictions])
+                    y_prob_final = np.concatenate([y_prob_final,y_prob])
+
+                matrix = confusion_matrix(y_test_final,predictions_final),
+                TP = matrix[0][1][1]
+                FP = matrix[0][1][0]
+                TN = matrix[0][0][0]
+                FN = matrix[0][0][1]
+
+                accuracy, sensitivity, specificity, mcc = getConfusionInformation(TP, TN, FP, FN) 
+               
+                outFile.write(cellLine + "\t" + 
+                              str(randomSeed) + "\t" +
+                              str(numEstimators) + "\t" +
+                              str(boolFeatureSelection) + "\t" +
+                              str(accuracy) + "\t" +
+                              str(sensitivity) + "\t" +
+                              str(specificity) + "\t" +
+                              str(mcc) + "\n")
 
 
-## This is the learner object that is trained on 70 percent of the data
+            """
+                print("iteration:",i,
+                     "randomSeed:",randomSeed,
+                     "numEstimators:",numEstimators,
+                     "isFeatureSelectionImplemented",boolFeatureSelection,
+                     "accuracy:",accuracy,
+                     "sensitivity:",sensitivity,
+                     "specificity:",specificity,
+                     "mcc:",mcc,
+                     sep = " ")
+            """
+
+
+## Optimize, formating -> trainFile,outFile,boolFeatureSelection,valuesNumEstimators,rangeRandomSeed
 print("Training PC3\n")
-#train(trainPC3)
+valuesNumEstimators = list(range(101))
+valuesNumEstimators = valuesNumEstimators[6:100:2]
+print(valuesNumEstimators)
+#optomizeRF(trainPC3,"PC3","outFile.txt",True,valuesNumEstimators,5)
+optomizeRF(trainPC3,"PC3","outFile.txt",False,valuesNumEstimators,5)
+#optomizeRF(trainMCF7,"MCF7","outFile.txt",True,valuesNumEstimators,5)
+#optomizeRF(trainMCF7,"MCF7","outFile.txt",False,valuesNumEstimators,5)
 
-print("\n\n\nTraining MCF7\n")
-#train(trainMCF7)
+"""
+## TRAINING 
+print("Training PC3\n")
+train(trainPC3)
+
+#print("\n\n\nTraining MCF7\n")
+train(trainMCF7)
 
 ## TESTING
 print("\n\n\nTesting PC3\n")
@@ -164,3 +271,4 @@ with open(discretePredictionsOut, 'w') as dPO :
     dPO.write("Compound No. from Validation List,MCF7,PC3\n")
     for i in range(len(predictionsPC3)) :
         dPO.write(str(i+1) + "," + str(predictionsMCF7[i]) + "," + str(predictionsPC3[i]) + '\n')
+"""

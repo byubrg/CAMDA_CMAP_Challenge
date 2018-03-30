@@ -17,3 +17,6 @@ def printConfusionCalculations(TP, TN, FP, FN) :
     print("sensitivity: " + str(getSensitivity(TP, FN)))
     print("specificity: " + str(getSpecificity(TN, FP)))
     print("MCC: " + str(getMCC(TP, TN, FP, FN)))
+
+def getConfusionInformation(TP, TN, FP, FN) :
+    return getAccuracy(TP, TN, FP, FN), getSensitivity(TP, FN), getSpecificity(TN, FP), getMCC(TP, TN, FP, FN)

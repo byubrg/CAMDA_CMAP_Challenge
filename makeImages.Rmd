@@ -1,0 +1,50 @@
+---
+title: "makeImages.Rmd"
+author: "Rex Sumsion"
+date: "3/28/2018"
+output: html_document
+---
+
+
+```{r}
+setwd("~/Desktop/CAMDA_CMAP_Challenge")
+#setwd("~/Desktop")
+data <- read.table("outFile.txt", sep="\t", header=TRUE)
+data
+```
+
+```{r}
+accuracyNumEstimators <- tapply(data$accuracy,data$numEstimators,mean)
+sensitivityNumEstimators <- tapply(data$sensitivity,data$numEstimators,mean)
+specificityNumEstimators <- tapply(data$specificity,data$numEstimators,mean)
+mccNumEstimators <- tapply(data$mcc,data$numEstimators,mean)
+
+accuracyNumEstimators <- data.frame(accuracyNumEstimators)
+x.axis <- row.names(accuracyNumEstimators)
+
+prepared.data <- data.frame(x.axis,accuracyNumEstimators,specificityNumEstimators,sensitivityNumEstimators,mccNumEstimators) 
+prepared.data$x.axis <- as.numeric(as.character(prepared.data$x.axis))
+prepared.data
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(prepared.data,aes(x.axis,accuracyNumEstimators))+
+  geom_line() +
+  labs(title="Accuracy")
+
+ggplot(prepared.data,aes(x.axis,specificityNumEstimators))+
+  geom_line() +
+  labs(title="Specificity")
+
+ggplot(prepared.data,aes(x.axis,sensitivityNumEstimators))+
+  geom_line() +
+  labs(title="Sensitivity")
+
+ggplot(prepared.data,aes(x.axis,mccNumEstimators))+
+  geom_line() +
+  labs(title="MCC")
+
+```
+

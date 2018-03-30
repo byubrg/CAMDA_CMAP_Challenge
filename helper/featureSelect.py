@@ -1,23 +1,24 @@
 import numpy as np
 
-def featureSelect(features):
+def featureSelect(train_features, test_features):
 
-    ## find the variance of every column
-    variance = []
-    for columnNum  in range(len(features[0])):
-    	colData = []
-    	for position in range(len(features)):
-    		colData.append(float(features[position][columnNum]))
-    	variance.append(np.var(colData))
-    # find the top 25%
-    varianceSorted = sorted(variance)
-    cutOffValue = varianceSorted[3 * int(len(varianceSorted)/4)]
-    top25 = []
-    top25values = []
-    for rowNum in range(len(features)):
-        myrow = []
-        for index in range(len(features[0])):
-    	       if variance[index] >= cutOffValue:
-    		             myrow.append(float(features[rowNum][index]))
-        top25values.append(myrow)
-    return np.array(top25values)
+    ## Concatenates the two arrays to get the combined array
+    combined = np.concatenate((train_features, test_features),axis=0)
+
+    ## This takes the variance of the 2d np array on the zero axis.
+    ## For example indeci one of the first array will be compared with the first 
+    ## indecies of the other arrays to calculate the variance the variance of these 
+    ## will be in the first indeci of the resulting 1d array..
+    combinedVariance = np.var(combined, axis=0)
+
+    numFeatures = len(combinedVariance)
+
+    ## Gets the the value of 1/4 the number of features 
+    oneFourth = int(numFeatures * 5/ 100)
+
+    ## This grabs the top 25 variance indecis
+    wantedIndecis = np.argpartition(combinedVariance,-oneFourth)[-oneFourth:]
+
+    print(len(wantedIndecis))
+    return train_features[:,wantedIndecis], test_features[:,wantedIndecis]
+
