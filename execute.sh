@@ -14,6 +14,11 @@ cmapMetadataInfo=$CMAP_2_Entrez/metadata.tsv.gz
 #Created Files
 trainingReformatedCamda=$Data/trainingReformatedCamda.txt.gz
 testReformatedCamda=$Data/testReformatedCamda.txt.gz 
+trainingReformatedCamdaPC3=$Data/trainingReformatedCamda_PC3.txt.gz
+trainingReformatedCamdaMCF7=$Data/trainingReformatedCamda_MCF7.txt.gz
+testReformatedCamdaPC3=$Data/testReformatedCamda_PC3.txt.gz
+testReformatedCamdaMCF7=$Data/testReformatedCamda_MCF7.txt.gz
+discretePredictionsOut=discretePredictionsOut.csv
 
 #Download and filter CMAP scripts 
 reformatCamda=$ReformatingData/reformatCamdaGivin.py
@@ -22,8 +27,8 @@ cmapDownload=$CMAP_2_Entrez/download.sh
 cmapParse=$CMAP_2_Entrez/parse.sh
 
 #Algorithm Scripts
-mlp=$scikitLearnAlgorithms/mlp.py
-ranForest=$scikitLearnAlgorithms/random_forest.py
+#execute=$scikitLearnAlgorithms/execute.py
+execute=execute.py
 
 #Opening environment for dependencies
 minicondaBin=Software/miniconda/bin/
@@ -40,6 +45,6 @@ cd ../../..
 #python3 $reformatCamda $camdaGiven $cmapExpressionData $trainingReformatedCamda $testReformatedCamda $cmapMetadataInfo
 
 
-#The scilearn algorithms - Please add your algorithm here
-#python3 $mlp $trainingReformatedCamda
-python3 $ranForest $trainingReformatedCamda
+##The This script sets up cross validation and executes each algorithm in collaberation of ensemble methods 
+python3 $execute $trainingReformatedCamdaPC3 $trainingReformatedCamdaMCF7 $testReformatedCamdaPC3 $testReformatedCamdaMCF7 $discretePredictionsOut
+

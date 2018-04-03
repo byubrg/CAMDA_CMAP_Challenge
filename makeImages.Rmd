@@ -1,0 +1,66 @@
+---
+title: "makeImages.Rmd"
+author: "Rex Sumsion"
+date: "3/28/2018"
+output: html_document
+---
+
+
+```{r}
+setwd("~/Desktop/CAMDA_CMAP_Challenge")
+#setwd("~/Desktop")
+data <- read.table("outFile.txt", sep="\t", header=TRUE)
+data
+```
+
+```{r}
+accuracyMean <- tapply(data$accuracy,data$parameterTested,mean)
+sensitivityMean <- tapply(data$sensitivity,data$parameterTested,mean)
+specificityMean <- tapply(data$specificity,data$parameterTested,mean)
+mccMean <- tapply(data$mcc,data$parameterTested,mean)
+
+accuracyMean <- data.frame(accuracyMean)
+parameterTested <- row.names(accuracyMean)
+
+prepared.data <- data.frame(parameterTested,accuracyMean,sensitivityMean,specificityMean,mccMean) 
+prepared.data$parameterTested <- as.numeric(as.character(prepared.data$parameterTested))
+prepared.data
+```
+
+```{r}
+library(ggplot2)
+
+accuracyPlot <- ggplot(prepared.data,aes(parameterTested,accuracyMean))+
+  geom_line() +
+  labs(title="Accuracy")
+
+specificityPlot <- ggplot(prepared.data,aes(parameterTested,specificityMean))+
+  geom_line() +
+  labs(title="Specificity")
+
+sensitivityPlot <- ggplot(prepared.data,aes(parameterTested,sensitivityMean))+
+  geom_line() +
+  labs(title="Sensitivity")
+
+mccPlot <- ggplot(prepared.data,aes(parameterTested,mccMean))+
+  geom_line() +
+  labs(title="MCC")
+
+accuracyPlot
+specificityPlot
+sensitivityPlot
+mccPlot
+
+```
+
+```{r}
+## change location for your algorithm and parameter
+setwd("ParameterOptomizationGraphs/randomForest/numberOfTrees")
+
+## 
+ggsave("accuracyNumberOfTrees.png",accuracyPlot)
+ggsave("specificityNumberOfTrees.png",accuracyPlot)
+ggsave("sensitivityNumberOfTrees.png",accuracyPlot)
+ggsave("mccNumberOfTrees.png",accuracyPlot)
+```
+
