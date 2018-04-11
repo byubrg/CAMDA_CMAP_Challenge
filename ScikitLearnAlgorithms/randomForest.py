@@ -4,7 +4,14 @@ from sklearn.ensemble import RandomForestClassifier #ensemble or neural_network?
 def rf(X_train, X_test, y_train) :
 
     ## Build your classifier
-    RF = RandomForestClassifier(n_estimators=100, random_state=0)
+    RF = RandomForestClassifier(n_estimators=25,
+                                max_depth=9,
+                                min_samples_split=2,
+                                min_samples_leaf=1,
+                                min_weight_fraction_leaf=0,
+                                max_leaf_nodes=25,
+                                bootstrap=False, 
+                                random_state=randomSeed)
 
     ## Place the training data in the MLP to train your algorithm
     RF.fit(X_train, y_train)
@@ -15,9 +22,17 @@ def rf(X_train, X_test, y_train) :
 
     return predictions, y_prob
 
-def rfo(X_train, X_test, y_train, numEstimators, randomSeed) :
+## This function illustrates how we optomized the parameters.
+def rfo(X_train, X_test, y_train, optomization, randomSeed) :
     ## Build your classifier
-    RF = RandomForestClassifier(n_estimators=numEstimators, random_state=randomSeed)
+    RF = RandomForestClassifier(n_estimators=25,
+                                max_depth=9,
+                                min_samples_split=2,
+                                min_samples_leaf=1,
+                                min_weight_fraction_leaf=0,
+                                max_leaf_nodes=25,
+                                bootstrap=False, 
+                                random_state=randomSeed)
 
     ## Place the training data in the MLP to train your algorithm
     RF.fit(X_train, y_train)
