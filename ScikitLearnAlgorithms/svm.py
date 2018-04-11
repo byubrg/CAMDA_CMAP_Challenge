@@ -14,3 +14,10 @@ def supportVM(X_train, X_test, y_train) :
     y_prob =  np.ndarray(shape=(0,2), dtype=int)
 
     return predictions, y_prob
+
+
+
+## Many of the support vector machine parameters are based on the kernel that is set. The default, 'rbf' kernel, does not have
+## very many parameters associated with it. 'rbf' has the highest accuracy out of all the other kernels such as 'linear' and
+## 'poly'. Therefore, no changes have been made to the support vector machine int terms of parameter optimization.
+

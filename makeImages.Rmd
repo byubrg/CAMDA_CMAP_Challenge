@@ -9,7 +9,7 @@ output: html_document
 ```{r}
 setwd("~/Desktop/CAMDA_CMAP_Challenge")
 #setwd("~/Desktop")
-data <- read.table("outFile.txt", sep="\t", header=TRUE)
+data <- read.table("parameterOptomizationOutFile.txt", sep="\t", header=TRUE)
 data
 ```
 
@@ -55,12 +55,12 @@ mccPlot
 
 ```{r}
 ## change location for your algorithm and parameter
-setwd("ParameterOptomizationGraphs/randomForest/numberOfTrees")
+setwd("ParameterOptomizationGraphs/randomForest/max_leaf_nodes")
 
 ## 
-ggsave("accuracyNumberOfTrees.png",accuracyPlot)
-ggsave("specificityNumberOfTrees.png",accuracyPlot)
-ggsave("sensitivityNumberOfTrees.png",accuracyPlot)
-ggsave("mccNumberOfTrees.png",accuracyPlot)
+ggsave("accuracymax_leaf_nodes.png",accuracyPlot)
+ggsave("specificitymax_leaf_nodes.png",accuracyPlot)
+ggsave("sensitivitymax_leaf_nodes.png",accuracyPlot)
+ggsave("mccmax_leaf_nodes.png",accuracyPlot)
 ```
 

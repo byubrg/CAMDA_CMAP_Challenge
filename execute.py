@@ -43,11 +43,11 @@ def makePredictions(X_train,X_test,y_train) :
 
     ####### This is where we want to implement the Ensemble method ###### 
 #    predictions, y_prob = mlp(X_train, X_test, y_train)
-    predictions, y_prob = rf(X_train, X_test, y_train)
+#    predictions, y_prob = rf(X_train, X_test, y_train)
 #    predictions, y_prob = naiveBayes(X_train, X_test, y_train)
 #    predictions, y_prob = kNearestNeighbor(X_train, X_test, y_train)
 #    predictions, y_prob = supportVM(X_train, X_test, y_train) ##Attention, this returns a y_prob of 0 because it doesn't work with the SVM
-#    predictions, y_prob = logisticRegression(X_train, X_test, y_train)
+    predictions, y_prob = logisticRegression(X_train, X_test, y_train)
 #    predictions, y_prob = ensemble(X_train, X_test, y_train)
 
     return predictions, y_prob
@@ -220,6 +220,14 @@ def optomize(trainFile,cellLine,outFile,boolFeatureSelection,rangeOfParameterTes
 
                 accuracy, sensitivity, specificity, mcc = getConfusionInformation(TP, TN, FP, FN) 
                
+                print(cellLine + "\t" + 
+                              str(randomSeed) + "\t" +
+                              str(parameterTested) + "\t" +
+                              str(boolFeatureSelection) + "\t" +
+                              str(accuracy) + "\t" +
+                              str(sensitivity) + "\t" +
+                              str(specificity) + "\t" +
+                              str(mcc) + "\n")
                 outFile.write(cellLine + "\t" + 
                               str(randomSeed) + "\t" +
                               str(parameterTested) + "\t" +
@@ -242,11 +250,11 @@ def optomize(trainFile,cellLine,outFile,boolFeatureSelection,rangeOfParameterTes
                      sep = " ")
             """
 
-
 ## Optimize, formating -> trainFile,outFile,boolFeatureSelection,valuesNumEstimators,rangeRandomSeed
 print("Training PC3\n")
 valuesNumEstimators = list(range(101))
-valuesNumEstimators = valuesNumEstimators[6:100:5]
+valuesNumEstimators = valuesNumEstimators[1:100:10]
+#valuesNumEstimators = [True,False] 
 print(valuesNumEstimators)
 #optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
 optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
