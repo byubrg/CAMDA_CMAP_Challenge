@@ -11,7 +11,7 @@ def rf(X_train, X_test, y_train) :
                                 min_weight_fraction_leaf=0,
                                 max_leaf_nodes=25,
                                 bootstrap=False, 
-                                random_state=randomSeed)
+                                random_state=0)
 
     ## Place the training data in the MLP to train your algorithm
     RF.fit(X_train, y_train)
