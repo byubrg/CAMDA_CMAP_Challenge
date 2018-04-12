@@ -1,4 +1,5 @@
 from sklearn import svm
+import numpy as np
 
 def supportVM(X_train, X_test, y_train) :
 #    classifier = svm.SVC(probability=True) ## Look into this if time 
