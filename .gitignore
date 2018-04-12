@@ -2,3 +2,4 @@ ReformatingData/CMAP_2_Entrez/data.tsv.gz
 ReformatingData/CMAP_2_Entrez/metadata.tsv.gz
 Software/*
 helper/__pycache__/*
+ScikitLearnAlgorithms/__pycache__/*
