@@ -70,8 +70,6 @@ def train(trainFile, selected = None):
     ## Convert to numpy arrays for algorithms
     features = np.array(features,dtype=float)
     answers = np.array(answers,dtype=float) 
-    if selected != None:
-        features = features[:,selected]
     ## Initialize prediction arrays
     y_test_final = np.array([])
     predictions_final = np.array([])
@@ -90,7 +88,7 @@ def train(trainFile, selected = None):
         X_train, X_test, y_train, y_test = features[train], features[test], answers[train], answers[test]
 
         ## this is a custom function that takes the top 25 % of the variance of the values 
-        #X_train,X_test = featureSelect(X_train,X_test)
+        X_train,X_test = featureSelect(X_train,X_test)
 
         predictions, y_prob = makePredictions(X_train,X_test,y_train) 
 
@@ -309,13 +307,13 @@ print(valuesNumEstimators)
 #optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
 #optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
 
-selected = wrapper_function(trainPC3)
+#selected = wrapper_function(trainPC3)
 ## TRAINING 
 print("Training PC3\n")
-train(trainPC3,selected)
+train(trainPC3)
 
 print("\n\n\nTraining MCF7\n")
-train(trainMCF7,selected)
+train(trainMCF7)
 """
 ## TESTING
 print("\n\n\nTesting PC3\n")
