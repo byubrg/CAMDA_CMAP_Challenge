@@ -1,5 +1,6 @@
 import numpy as np
 import sys, gzip
+import copy
 
 ## Import sklearn modules
 from sklearn.model_selection import train_test_split
@@ -18,6 +19,7 @@ from ScikitLearnAlgorithms.naiveBayes import *
 from ScikitLearnAlgorithms.kNearestNeighbor import * 
 from ScikitLearnAlgorithms.svm import * 
 from ScikitLearnAlgorithms.logisticRegression import * 
+from ScikitLearnAlgorithms.gradientBoosting import grad
 
 ## Import Helper Modules
 from helper.calcuateAccuracy import *
@@ -47,13 +49,14 @@ def makePredictions(X_train,X_test,y_train) :
 #    predictions, y_prob = naiveBayes(X_train, X_test, y_train)
 #    predictions, y_prob = kNearestNeighbor(X_train, X_test, y_train)
 #    predictions, y_prob = supportVM(X_train, X_test, y_train) ##Attention, this returns a y_prob of 0 because it doesn't work with the SVM
-    predictions, y_prob = logisticRegression(X_train, X_test, y_train)
-#    predictions, y_prob = ensemble(X_train, X_test, y_train)
+#    predictions, y_prob = logisticRegression(X_train, X_test, y_train)
+    predictions, y_prob = ensemble(X_train, X_test, y_train)
 
     return predictions, y_prob
 
 
-def train(trainFile):
+def train(trainFile, selected = None):
+    print(trainFile)
     with gzip.open(trainFile, 'r') as file :
         data = np.genfromtxt(file, delimiter='\t',dtype=str)
 
@@ -67,7 +70,8 @@ def train(trainFile):
     ## Convert to numpy arrays for algorithms
     features = np.array(features,dtype=float)
     answers = np.array(answers,dtype=float) 
-
+    if selected != None:
+        features = features[:,selected]
     ## Initialize prediction arrays
     y_test_final = np.array([])
     predictions_final = np.array([])
@@ -78,7 +82,6 @@ def train(trainFile):
     i = 0
 
     ## Feature Selection needs to happen on each fold independently
-#    features = featureSelect(features)
     for train, test in skf.split(features, answers) :
         ## You can uncomment this row to see which indecis are used for the training and test sets for each fold
 #        print("Training: %s \n Test: %s" % (train, test))	
@@ -87,7 +90,7 @@ def train(trainFile):
         X_train, X_test, y_train, y_test = features[train], features[test], answers[train], answers[test]
 
         ## this is a custom function that takes the top 25 % of the variance of the values 
-        X_train,X_test = featureSelect(X_train,X_test)
+        #X_train,X_test = featureSelect(X_train,X_test)
 
         predictions, y_prob = makePredictions(X_train,X_test,y_train) 
 
@@ -249,6 +252,51 @@ def optomize(trainFile,cellLine,outFile,boolFeatureSelection,rangeOfParameterTes
                      "mcc:",mcc,
                      sep = " ")
             """
+def wrapper_function(trainFile):
+    selected = []
+    master_best_score = 0
+    #this is the wrapper function it will continue to add the best feature to the selected column untill the accuracy stops increasing
+    single = []
+    
+    with gzip.open(trainFile, 'r') as file :
+        data = np.genfromtxt(file, delimiter='\t',dtype=str)
+
+    ## Split the data up into features and answers
+    answers = []        	
+    features = []
+    for row in data[1:,]:
+        answers.append(row[1])
+        features.append(row[2:])
+	
+    ## Convert to numpy arrays for algorithms
+    features = np.array(features,dtype=float)
+    answers = np.array(answers,dtype=float) 
+    
+    for i in range(0,len(features[0])):
+        best_index = -1
+        best_score = 0
+        for j in range(0,len(features[0])):
+            if j in selected:
+                continue
+            temp = copy.deepcopy(selected)
+            temp.append(j)
+            #sub set the feature to have only the column that are desired
+            sub = features[:,temp]
+            print(features[:,temp])
+            print(len(sub[0]))
+            total_correct = train(trainFile,temp)
+            if total_correct is None:
+                total_correct = 0
+            if total_correct > best_score:
+                best_score = total_correct
+                best_index = j
+        if best_score > master_best_score:
+            master_best_score = best_score
+            selected.append(best_index)
+        else:
+            break
+    return selected
+
 
 ## Optimize, formating -> trainFile,outFile,boolFeatureSelection,valuesNumEstimators,rangeRandomSeed
 print("Training PC3\n")
@@ -257,18 +305,18 @@ valuesNumEstimators = valuesNumEstimators[1:100:10]
 #valuesNumEstimators = [True,False] 
 print(valuesNumEstimators)
 #optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
-optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
+#optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
 #optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
 #optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
 
-"""
+selected = wrapper_function(trainPC3)
 ## TRAINING 
 print("Training PC3\n")
-train(trainPC3)
+train(trainPC3,selected)
 
-#print("\n\n\nTraining MCF7\n")
-train(trainMCF7)
-
+print("\n\n\nTraining MCF7\n")
+train(trainMCF7,selected)
+"""
 ## TESTING
 print("\n\n\nTesting PC3\n")
 predictionsPC3, yprobPC3 = test(trainPC3,testPC3)
