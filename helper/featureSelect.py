@@ -14,7 +14,7 @@ def featureSelect(train_features, test_features):
     numFeatures = len(combinedVariance)
 
     ## Gets the the value of 1/4 the number of features 
-    oneFourth = int(numFeatures * 5/ 100)
+    oneFourth = int(numFeatures * 20/ 100)
 
     ## This grabs the top 25 variance indecis
     wantedIndecis = np.argpartition(combinedVariance,-oneFourth)[-oneFourth:]

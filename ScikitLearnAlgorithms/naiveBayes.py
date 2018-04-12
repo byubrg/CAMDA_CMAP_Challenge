@@ -1,4 +1,5 @@
 ## This implements the Gaussian Naive Bayes algorithm. If time find out what the other algorithms are.
+## Griffin did the emperical analysis for this algorithm. He found that no adjustments need to be made.
 from sklearn.naive_bayes import GaussianNB
 
 def naiveBayes(X_train, X_test, y_train) :
