@@ -11,6 +11,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import StratifiedKFold
+from sklearn.decomposition import PCA
 
 ## Import customly adapted sklearn algorithm modules 
 from ScikitLearnAlgorithms.mlp import * 
@@ -50,6 +51,7 @@ def makePredictions(X_train,X_test,y_train) :
 #    predictions, y_prob = kNearestNeighbor(X_train, X_test, y_train)
 #    predictions, y_prob = supportVM(X_train, X_test, y_train) ##Attention, this returns a y_prob of 0 because it doesn't work with the SVM
 #    predictions, y_prob = logisticRegression(X_train, X_test, y_train)
+#    predictions, y_prob = grad(X_train, X_test, y_train)
     predictions, y_prob = ensemble(X_train, X_test, y_train)
 
     return predictions, y_prob
@@ -91,6 +93,11 @@ def train(trainFile, selected = None):
 
         ## this is a custom function that takes the top 25 % of the variance of the values 
         #X_train,X_test = featureSelect(X_train,X_test)
+        #pca = PCA(n_components=.95)
+        #pca.fit(X_train)
+       
+        #X_train = pca.transform(X_train)
+        #X_test = pca.transform(X_test)
 
         predictions, y_prob = makePredictions(X_train,X_test,y_train) 
 
@@ -194,6 +201,7 @@ def optomize(trainFile,cellLine,outFile,boolFeatureSelection,rangeOfParameterTes
                     X_train, X_test, y_train, y_test = features[train], features[test], answers[train], answers[test]
 
                     ## this is a custom function that takes the top 25 % of the variance of the values 
+                    
                     if boolFeatureSelection == True :
                         X_train,X_test = featureSelect(X_train,X_test)
        
@@ -299,6 +307,7 @@ def wrapper_function(trainFile):
 
 
 ## Optimize, formating -> trainFile,outFile,boolFeatureSelection,valuesNumEstimators,rangeRandomSeed
+"""
 print("Training PC3\n")
 valuesNumEstimators = list(range(101))
 valuesNumEstimators = valuesNumEstimators[1:100:10]
@@ -308,14 +317,17 @@ print(valuesNumEstimators)
 #optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
 #optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
 #optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
+"""
 
-selected = wrapper_function(trainPC3)
+#selected = wrapper_function(trainPC3)
+selected = None
 ## TRAINING 
 print("Training PC3\n")
 train(trainPC3,selected)
 
 print("\n\n\nTraining MCF7\n")
 train(trainMCF7,selected)
+
 """
 ## TESTING
 print("\n\n\nTesting PC3\n")
@@ -328,4 +340,5 @@ with open(discretePredictionsOut, 'w') as dPO :
     dPO.write("Compound No. from Validation List,MCF7,PC3\n")
     for i in range(len(predictionsPC3)) :
         dPO.write(str(i+1) + "," + str(predictionsMCF7[i]) + "," + str(predictionsPC3[i]) + '\n')
+
 """
