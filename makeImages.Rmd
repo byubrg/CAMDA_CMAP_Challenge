@@ -9,7 +9,7 @@ output: html_document
 ```{r}
 setwd("~/Desktop/CAMDA_CMAP_Challenge")
 #setwd("~/Desktop")
-data <- read.table("parameterOptomizationOutFile.txt", sep="\t", header=TRUE)
+data <- read.table("numTrees.txt", sep="\t", header=TRUE)
 data
 ```
 
@@ -29,28 +29,40 @@ prepared.data
 
 ```{r}
 library(ggplot2)
+library(gridExtra)
 
 accuracyPlot <- ggplot(prepared.data,aes(parameterTested,accuracyMean))+
   geom_line() +
-  labs(title="Accuracy")
+  theme_classic() +
+  geom_vline(xintercept=25, linetype="dashed", color = "red") +
+  labs(x = "Number of Trees", y = "Mean Accuracy", title="Accuracy")
 
 specificityPlot <- ggplot(prepared.data,aes(parameterTested,specificityMean))+
   geom_line() +
-  labs(title="Specificity")
+  theme_classic() +
+  geom_vline(xintercept=25, linetype="dashed", color = "red") +
+  labs(x = "Number of Trees", y = "Mean Specificity", title="Specificity")
 
 sensitivityPlot <- ggplot(prepared.data,aes(parameterTested,sensitivityMean))+
   geom_line() +
-  labs(title="Sensitivity")
+  theme_classic() +
+  geom_vline(xintercept=25, linetype="dashed", color = "red") +
+  labs(x = "Number of Trees", y = "Mean Sensitivity", title="Sensitivity")
 
 mccPlot <- ggplot(prepared.data,aes(parameterTested,mccMean))+
   geom_line() +
-  labs(title="MCC")
+  theme_classic() +
+  geom_vline(xintercept=25, linetype="dashed", color = "red") +
+  labs(x = "Number of Trees", y = "Mean MCC", title="MCC")
 
-accuracyPlot
-specificityPlot
-sensitivityPlot
-mccPlot
+#accuracyPlot
+#specificityPlot
+#sensitivityPlot
+#mccPlot
 
+grid.arrange(accuracyPlot,specificityPlot,sensitivityPlot,mccPlot, nrow = 2)
+getwd()
+ggsave("optomization.png",grid.arrange(accuracyPlot,specificityPlot,sensitivityPlot,mccPlot, nrow = 2))
 ```
 
 ```{r}

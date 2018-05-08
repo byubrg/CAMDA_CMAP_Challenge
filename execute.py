@@ -49,10 +49,10 @@ def makePredictions(X_train,X_test,y_train) :
 #    predictions, y_prob = rf(X_train, X_test, y_train)
 #    predictions, y_prob = naiveBayes(X_train, X_test, y_train)
 #    predictions, y_prob = kNearestNeighbor(X_train, X_test, y_train)
-#    predictions, y_prob = supportVM(X_train, X_test, y_train) ##Attention, this returns a y_prob of 0 because it doesn't work with the SVM
+    predictions, y_prob = supportVM(X_train, X_test, y_train) ##Attention, this returns a y_prob of 0 because it doesn't work with the SVM
 #    predictions, y_prob = logisticRegression(X_train, X_test, y_train)
 #    predictions, y_prob = grad(X_train, X_test, y_train)
-    predictions, y_prob = ensemble(X_train, X_test, y_train)
+#    predictions, y_prob = ensemble(X_train, X_test, y_train)
 
     return predictions, y_prob
 
